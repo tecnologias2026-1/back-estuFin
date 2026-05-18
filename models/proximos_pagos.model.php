@@ -10,8 +10,8 @@ function getAllProximosPagos($email) {
 
 function createProximoPago($data) {
     global $pdo;
-    $sql = "INSERT INTO proximos_pagos (usuario_email, nombre_pago, monto, fecha_vencimiento, estado, es_recurrente)
-            VALUES (:usuario_email, :nombre_pago, :monto, :fecha_vencimiento, :estado, :es_recurrente)";
+    $sql = "INSERT INTO proximos_pagos (usuario_email, nombre_pago, monto, fecha_vencimiento, estado, es_recurrente, metodo_pago)
+            VALUES (:usuario_email, :nombre_pago, :monto, :fecha_vencimiento, :estado, :es_recurrente, :metodo_pago)";
     $stmt = $pdo->prepare($sql);
     $stmt->execute($data);
     return ["mensaje" => "Próximo pago creado exitosamente"];
@@ -21,7 +21,7 @@ function updateProximoPago($id, $data) {
     global $pdo;
     $sql = "UPDATE proximos_pagos SET nombre_pago = :nombre_pago, monto = :monto,
             fecha_vencimiento = :fecha_vencimiento, estado = :estado,
-            es_recurrente = :es_recurrente WHERE id = :id";
+            es_recurrente = :es_recurrente, metodo_pago = :metodo_pago WHERE id = :id";
     $data[':id'] = $id;
     $stmt = $pdo->prepare($sql);
     $stmt->execute($data);
