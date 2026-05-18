@@ -1,10 +1,10 @@
 <?php
 require_once __DIR__ . '/../database/connection.php';
 
-function getAllMovimientos() {
+function getAllMovimientos($email) {
     global $pdo;
-    $stmt = $pdo->prepare("SELECT * FROM movimientos ORDER BY fecha DESC");
-    $stmt->execute();
+    $stmt = $pdo->prepare("SELECT * FROM movimientos WHERE usuario_email = :email ORDER BY fecha DESC");
+    $stmt->execute([':email' => $email]);
     return $stmt->fetchAll();
 }
 

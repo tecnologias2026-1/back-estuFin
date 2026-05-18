@@ -2,7 +2,8 @@
 require_once __DIR__ . '/../models/movimientos.model.php';
 
 function handleGetAllMovimientos() {
-    $data = getAllMovimientos();
+    $email = $_GET['email'] ?? '';
+    $data = getAllMovimientos($email);
     echo json_encode($data);
 }
 
