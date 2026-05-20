@@ -1,121 +1,51 @@
 <?php
 require_once __DIR__ . '/../database/connection.php';
 
-global $conn;
+function registrarUsuario($nombre, $email, $password) {
+    global $pdo;
 
-function getUsersModel() {
-  global $conn;
-  
-  $query = "SELECT * FROM usuario";
-  $result = $conn->query($query);
-  
-  if (!$result) {
-    return false;
-  }
-  
-  $users = [];
-  while ($row = $result->fetch_assoc()) {
-    $users[] = $row;
-  }
-  
-  return $users;
+    // Verificar si ya existe
+    $check = $pdo->prepare("SELECT id FROM usuarios WHERE email = :email");
+    $check->execute([':email' => $email]);
+    if ($check->fetch()) {
+        return ["error" => "El correo ya está registrado"];
+    }
+
+    $hash = password_hash($password, PASSWORD_BCRYPT);
+
+    $stmt = $pdo->prepare(
+        "INSERT INTO usuarios (nombre, email, password_hash) 
+         VALUES (:nombre, :email, :hash)"
+    );
+    $stmt->execute([
+        ':nombre' => $nombre,
+        ':email'  => $email,
+        ':hash'   => $hash
+    ]);
+
+    return ["mensaje" => "Usuario registrado exitosamente"];
 }
 
-function getUserByIdModel($id) {
-  global $conn;
-  
-  $id = intval($id);
-  $query = "SELECT * FROM usuario WHERE id = ?";
-  
-  $stmt = $conn->prepare($query);
-  if (!$stmt) {
-    return false;
-  }
-  
-  $stmt->bind_param("i", $id);
-  $stmt->execute();
-  $result = $stmt->get_result();
-  
-  if (!$result) {
-    return false;
-  }
-  
-  $user = $result->fetch_assoc();
-  $stmt->close();
-  
-  return $user;
-}
+function loginUsuario($email, $password) {
+    global $pdo;
 
-function createUserModel($data) {
-  global $conn;
-  
-  $nombre = $data['nombre'] ?? '';
-  $email = $data['email'] ?? '';
-  $telefono = $data['telefono'] ?? null;
-  
-  $query = "INSERT INTO usuario (nombre, cedula, correo) VALUES (?, ?, ?)";
-  
-  $stmt = $conn->prepare($query);
-  if (!$stmt) {
-    return false;
-  }
-  
-  $stmt->bind_param("sss", $nombre, $email, $telefono);
-  if (!$stmt->execute()) {
-    return false;
-  }
-  
-  $id = $conn->insert_id;
-  $stmt->close();
-  
-  return $id;
-}
+    $stmt = $pdo->prepare(
+        "SELECT id, nombre, email, password_hash 
+         FROM usuarios WHERE email = :email"
+    );
+    $stmt->execute([':email' => $email]);
+    $usuario = $stmt->fetch();
 
-function updateUserModel($id, $data) {
-  global $conn;
-  
-  $id = intval($id);
-  $nombre = $data['nombre'] ?? null;
-  $email = $data['email'] ?? null;
-  $telefono = $data['telefono'] ?? null;
-  
-  $query = "UPDATE users SET nombre = ?, email = ?, telefono = ? WHERE id = ?";
-  
-  $stmt = $conn->prepare($query);
-  if (!$stmt) {
-    return false;
-  }
-  
-  $stmt->bind_param("sssi", $nombre, $email, $telefono, $id);
-  if (!$stmt->execute()) {
-    return false;
-  }
-  
-  $affected = $stmt->affected_rows;
-  $stmt->close();
-  
-  return $affected;
-}
+    if (!$usuario || !password_verify($password, $usuario['password_hash'])) {
+        return ["error" => "Correo o contraseña incorrectos"];
+    }
 
-function deleteUserModel($id) {
-  global $conn;
-  
-  $id = intval($id);
-  $query = "DELETE FROM users WHERE id = ?";
-  
-  $stmt = $conn->prepare($query);
-  if (!$stmt) {
-    return false;
-  }
-  
-  $stmt->bind_param("i", $id);
-  if (!$stmt->execute()) {
-    return false;
-  }
-  
-  $affected = $stmt->affected_rows;
-  $stmt->close();
-  
-  return $affected;
+    return [
+        "mensaje" => "Login exitoso",
+        "usuario" => [
+            "id"     => $usuario['id'],
+            "nombre" => $usuario['nombre'],
+            "email"  => $usuario['email']
+        ]
+    ];
 }
-?>

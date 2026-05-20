@@ -24,6 +24,19 @@ if (strpos($path, '/usuarios') === 0) {
     require_once 'routes/user.routes.php';
     handleUserRoutes($method, $path);
 
+} elseif (strpos($path, '/gastos_fijos') === 0) {
+    require_once 'controllers/gastos_fijos.controller.php';
+    switch ($method) {
+        case 'GET':    handleGetGastosFijos();    break;
+        case 'POST':   handleCreateGastoFijo();   break;
+        case 'DELETE': handleDeleteGastoFijo();   break;
+        default: http_response_code(405); echo json_encode(['error' => 'Método no permitido']);
+}
+
+} elseif (strpos($path, '/usuarios') === 0) {
+    require_once 'controllers/user.controller.php';
+  
+
 } elseif (strpos($path, '/metodos_pago') === 0) {
     require_once 'controllers/metodos_pago.controller.php';
     switch ($method) {
