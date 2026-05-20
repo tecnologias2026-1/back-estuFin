@@ -1,47 +1,53 @@
 <?php
-// Enable error reporting
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Set headers
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 header('Content-Type: application/json; charset=utf-8');
 
-// Handle preflight requests
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-  http_response_code(200);
-  exit();
+    http_response_code(200);
+    exit();
 }
 
-// Autoload classes
-spl_autoload_register(function ($class) {
-  $file = str_replace('\\', '/', $class) . '.php';
-  if (file_exists($file)) {
-    require_once $file;
-  }
-});
-
-// Get request method and path
 $method = $_SERVER['REQUEST_METHOD'];
-$path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-if (strpos($path, '/api') === 0) {
-  $path = substr($path, 4);
-}
-if ($path === '') {
-  $path = '/';
-}
+$path   = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-// Route requests
+// Quitar prefijo /back-estuFin/api o /api
+$path = preg_replace('#^(/back-estuFin)?/api#', '', $path);
+if ($path === '' || $path === null) $path = '/';
+
+// ── Enrutador ─────────────────────────────────────────────
 if (strpos($path, '/usuarios') === 0) {
-  require_once 'routes/user.routes.php';
-  handleUserRoutes($method, $path);
+    require_once 'routes/user.routes.php';
+    handleUserRoutes($method, $path);
+
+} elseif (strpos($path, '/metodos_pago') === 0) {
+    require_once 'controllers/metodos_pago.controller.php';
+    switch ($method) {
+        case 'GET':    handleGetAllMetodosPago();    break;
+        case 'POST':   handleCreateMetodoPago();     break;
+        case 'PUT':    handleUpdateMetodoPago();     break;
+        case 'DELETE': handleDeleteMetodoPago();     break;
+        default: http_response_code(405); echo json_encode(['error' => 'Método no permitido']);
+    }
+
+} elseif (strpos($path, '/movimientos') === 0) {
+    require_once 'controllers/movimientos.controller.php';
+    switch ($method) {
+        case 'GET':  handleGetAllMovimientos();  break;
+        case 'POST': handleCreateMovimiento();   break;
+        default: http_response_code(405); echo json_encode(['error' => 'Método no permitido']);
+    }
+
 } elseif ($path === '/') {
-  http_response_code(200);
-  echo json_encode(['message' => 'Servidor backend activo']);
+    http_response_code(200);
+    echo json_encode(['message' => 'Servidor backend activo']);
+
 } else {
-  http_response_code(404);
-  echo json_encode(['error' => 'Ruta no encontrada']);
+    http_response_code(404);
+    echo json_encode(['error' => 'Ruta no encontrada']);
 }
 ?>
