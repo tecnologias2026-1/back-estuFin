@@ -1,8 +1,6 @@
 # 🔧 Backend – EstuFin
 
-EstuFin es una aplicación de **finanzas personales** que permite a los usuarios registrar movimientos, controlar gastos fijos y rápidos, gestionar métodos de pago, programar próximos pagos y definir metas financieras.
-
-Este repositorio contiene la implementación del backend desarrollado con **PHP** utilizando una estructura modular básica, conectado a una base de datos **Supabase (PostgreSQL)**.
+Este repositorio contiene el backend del sistema **EstuFin** (aplicación de finanzas personales), desarrollado con **PHP** utilizando una estructura modular básica y desplegado en **Render**.
 
 ---
 
@@ -20,25 +18,25 @@ Este repositorio contiene la implementación del backend desarrollado con **PHP*
 
 Implementar un servidor HTTP capaz de:
 
-- Gestionar solicitudes REST desde el frontend.
-- Procesar datos enviados por el cliente.
-- Conectarse a la base de datos Supabase (PostgreSQL).
-- Implementar operaciones CRUD sobre todas las tablas del sistema.
+- Gestionar solicitudes REST.
+- Procesar datos enviados desde el frontend.
+- Conectarse a base de datos.
+- Implementar operaciones CRUD.
 - Retornar respuestas en formato JSON.
 
 ---
 
 ## 🏗️ Arquitectura
 
-El backend sigue una estructura modular organizada así:
+El backend sigue una estructura modular:
 
 ```
 back-estuFin/
 ├── api/              → Punto de entrada de los endpoints
-├── controllers/      → Lógica de negocio de cada módulo
-├── models/           → Acceso y consultas a la base de datos
-├── routes/           → Definición y enrutamiento de endpoints
-├── database/         → Conexión a Supabase y scripts SQL
+├── controllers/      → Lógica del sistema
+├── models/           → Acceso a base de datos
+├── routes/           → Definición de endpoints
+├── database/         → Conexión y scripts SQL
 ├── Dockerfile        → Configuración para contenedor
 ├── composer.json     → Dependencias PHP
 └── test.php          → Archivo de pruebas
@@ -46,119 +44,28 @@ back-estuFin/
 
 ---
 
-## 🌿 Rama Documentada
+## 🔵 Rama: `main` — Backend en PHP
 
-### 🔵 `php-version` — Backend en PHP
-
-Backend desarrollado con **PHP puro** (sin frameworks), siguiendo una arquitectura modular (routes → controllers → models → database).
+Backend desarrollado con **PHP** utilizando estructura modular básica.
 
 ### ▶️ Ejecución Local
 
 ```bash
-# Opción 1: Servidor embebido de PHP
 php -S localhost:8000
-
-# Opción 2: XAMPP
-# Copiar el proyecto en la carpeta htdocs y acceder desde el navegador
 ```
 
-Servidor local disponible en:
+Servidor disponible en:
 ```
 http://localhost:8000
 ```
 
----
+### 🚀 Despliegue
 
-## 🗄️ Base de Datos — Supabase (PostgreSQL)
-
-La base de datos está alojada en **Supabase**. La tabla central del sistema es `movimientos`, desde donde se registran todos los ingresos y gastos de la aplicación.
-
-### Tablas del sistema
-
-#### 👤 `usuarios`
-| Columna | Tipo | Descripción |
-|---|---|---|
-| id | int8 | Identificador único |
-| nombre | text | Nombre del usuario |
-| email | text | Correo electrónico |
-| password_hash | text | Contraseña encriptada |
-| created_at | timestamptz | Fecha de registro |
-
----
-
-#### 💸 `movimientos` *(tabla principal)*
-| Columna | Tipo | Descripción |
-|---|---|---|
-| id | uuid | Identificador único |
-| usuario_email | text | Email del usuario propietario |
-| tipo | text | `ingreso` o `gasto` |
-| monto | float8 | Valor del movimiento |
-| categoria | text | Categoría del movimiento |
-| fecha | date | Fecha del movimiento |
-| metodo_pago | text | Método de pago utilizado |
-| descripcion | text | Descripción del movimiento |
-
----
-
-#### 🔒 `gastos_fijos`
-| Columna | Tipo | Descripción |
-|---|---|---|
-| id | int8 | Identificador único |
-| usuario_email | text | Email del usuario propietario |
-| nombre | text | Nombre del gasto fijo |
-| monto | float8 | Valor del gasto |
-| metodo_pago | text | Método de pago |
-| created_at | timestamptz | Fecha de creación |
-
----
-
-#### ⚡ `gastos_rapidos`
-| Columna | Tipo | Descripción |
-|---|---|---|
-| id | int8 | Identificador único |
-| usuario_email | text | Email del usuario propietario |
-| nombre | text | Nombre del gasto |
-| monto | float8 | Valor del gasto |
-| categoria | text | Categoría |
-| metodo_pago | text | Método de pago |
-| created_at | timestamptz | Fecha de creación |
-
----
-
-#### 💳 `metodos_pago`
-| Columna | Tipo | Descripción |
-|---|---|---|
-| id | int8 | Identificador único |
-| usuario_email | text | Email del usuario propietario |
-| nombre_metodo | text | Nombre del método (Nequi, Bancolombia, etc.) |
-| saldo | float8 | Saldo disponible |
-| created_at | timestamptz | Fecha de creación |
-
----
-
-#### 📅 `proximos_pagos`
-| Columna | Tipo | Descripción |
-|---|---|---|
-| id | int8 | Identificador único |
-| usuario_email | text | Email del usuario propietario |
-| nombre_pago | text | Nombre del pago programado |
-| monto | float8 | Valor del pago |
-| fecha_vencimiento | date | Fecha límite del pago |
-| estado | text | `pendiente` o `pagado` |
-| es_recurrente | bool | Si el pago se repite |
-| metodo_pago | text | Método de pago asociado |
-
----
-
-#### 🎯 `metas_financieras`
-| Columna | Tipo | Descripción |
-|---|---|---|
-| id | uuid | Identificador único |
-| usuario_email | text | Email del usuario propietario |
-| nombre_meta | text | Nombre de la meta |
-| monto_objetivo | float8 | Monto total a alcanzar |
-| monto_ahorrado | float8 | Monto ahorrado hasta ahora |
-| fecha_limite | date | Fecha objetivo |
+Compatible con:
+- ✅ Render (servicio PHP)
+- ✅ InfinityFree
+- ✅ Hostinger
+- ✅ XAMPP (local)
 
 ---
 
@@ -222,54 +129,138 @@ La base de datos está alojada en **Supabase**. La tabla central del sistema es 
 
 ---
 
-## 🔐 Validaciones Implementadas
+## 🗄️ Base de Datos
 
-- Validación de campos obligatorios en cada endpoint.
-- Manejo de errores HTTP: `200`, `201`, `400`, `404`, `500`.
-- Respuestas estandarizadas en formato JSON.
-- Autenticación de usuarios con contraseña encriptada (`password_hash`).
+La base de datos está en **Supabase (PostgreSQL)**.  
+Ubicación del script: `/database/script.sql`
+
+### Tablas del sistema
+
+#### 👤 `usuarios`
+| Columna | Tipo | Descripción |
+|---|---|---|
+| id | int8 | Identificador único |
+| nombre | text | Nombre del usuario |
+| email | text | Correo electrónico |
+| password_hash | text | Contraseña encriptada |
+| created_at | timestamptz | Fecha de registro |
+
+#### 💸 `movimientos` *(tabla principal)*
+| Columna | Tipo | Descripción |
+|---|---|---|
+| id | uuid | Identificador único |
+| usuario_email | text | Email del usuario |
+| tipo | text | `ingreso` o `gasto` |
+| monto | float8 | Valor del movimiento |
+| categoria | text | Categoría |
+| fecha | date | Fecha del movimiento |
+| metodo_pago | text | Método de pago utilizado |
+| descripcion | text | Descripción |
+
+#### 🔒 `gastos_fijos`
+| Columna | Tipo | Descripción |
+|---|---|---|
+| id | int8 | Identificador único |
+| usuario_email | text | Email del usuario |
+| nombre | text | Nombre del gasto |
+| monto | float8 | Valor del gasto |
+| metodo_pago | text | Método de pago |
+| created_at | timestamptz | Fecha de creación |
+
+#### ⚡ `gastos_rapidos`
+| Columna | Tipo | Descripción |
+|---|---|---|
+| id | int8 | Identificador único |
+| usuario_email | text | Email del usuario |
+| nombre | text | Nombre del gasto |
+| monto | float8 | Valor del gasto |
+| categoria | text | Categoría |
+| metodo_pago | text | Método de pago |
+| created_at | timestamptz | Fecha de creación |
+
+#### 💳 `metodos_pago`
+| Columna | Tipo | Descripción |
+|---|---|---|
+| id | int8 | Identificador único |
+| usuario_email | text | Email del usuario |
+| nombre_metodo | text | Nombre (Nequi, Bancolombia, etc.) |
+| saldo | float8 | Saldo disponible |
+| created_at | timestamptz | Fecha de creación |
+
+#### 📅 `proximos_pagos`
+| Columna | Tipo | Descripción |
+|---|---|---|
+| id | int8 | Identificador único |
+| usuario_email | text | Email del usuario |
+| nombre_pago | text | Nombre del pago |
+| monto | float8 | Valor del pago |
+| fecha_vencimiento | date | Fecha límite |
+| estado | text | `pendiente` o `pagado` |
+| es_recurrente | bool | Si el pago se repite |
+| metodo_pago | text | Método de pago |
+
+#### 🎯 `metas_financieras`
+| Columna | Tipo | Descripción |
+|---|---|---|
+| id | uuid | Identificador único |
+| usuario_email | text | Email del usuario |
+| nombre_meta | text | Nombre de la meta |
+| monto_objetivo | float8 | Monto total a alcanzar |
+| monto_ahorrado | float8 | Monto ahorrado hasta ahora |
+| fecha_limite | date | Fecha objetivo |
 
 ---
 
-## 🌍 URLs del Proyecto
+## 🔐 Validaciones Implementadas
+
+- Validación de campos obligatorios.
+- Validación de formato email.
+- Manejo de errores HTTP (200, 201, 400, 404, 500).
+- Respuestas en formato JSON.
+
+---
+
+## 🌍 URLs en Producción
 
 | Componente | URL |
 |---|---|
-| Frontend (GitHub Pages) | [https://tecnologias2026-1.github.io/EstuFin/](https://tecnologias2026-1.github.io/EstuFin/) |
-| Backend (producción) | *(pendiente de despliegue)* |
+| Frontend (GitHub Pages) | https://tecnologias2026-1.github.io/EstuFin/ |
+| Backend PHP (Render) | https://back-estufin.onrender.com |
 
 ---
 
-## 🚀 Despliegue en Render (PHP)
+## 🚀 Despliegue en Render
 
 ### 1️⃣ Subir proyecto a GitHub
 ```bash
 git init
 git add .
-git commit -m "Backend inicial PHP"
+git commit -m "Backend inicial"
 git push origin main
 ```
 
 ### 2️⃣ Crear servicio en Render
-1. Ir a [https://render.com](https://render.com)
+1. Ir a https://render.com
 2. **New → Web Service**
-3. Conectar el repositorio de GitHub
+3. Conectar repositorio GitHub
 4. Configurar:
-   - **Environment:** PHP
-   - **Build Command:** *(dejar vacío o según configuración)*
-   - **Start Command:** `php -S 0.0.0.0:$PORT`
+   - **Branch:** `main`
+   - **Runtime:** Docker
+   - **Instance Type:** Free
 
-### 3️⃣ Variables de entorno en Render
-Configurar las siguientes variables en el panel de Render:
+### 3️⃣ Variable de Puerto
+Render asigna automáticamente el puerto mediante:
+```php
+$port = getenv('PORT') ?: 8000;
+```
+
+### 4️⃣ Variables de entorno
+Configurar en el panel de Render:
 
 | Variable | Descripción |
 |---|---|
 | `SUPABASE_URL` | URL del proyecto Supabase |
-| `SUPABASE_KEY` | API Key de Supabase |
-| `DB_HOST` | Host de la base de datos |
-| `DB_USER` | Usuario de la base de datos |
-| `DB_PASSWORD` | Contraseña de la base de datos |
-| `DB_NAME` | Nombre de la base de datos |
+| `SUPABASE_KEY` | API Key (anon public) de Supabase |
 
 ---
 
@@ -277,18 +268,18 @@ Configurar las siguientes variables en el panel de Render:
 
 | Error | Solución |
 |---|---|
-| Puerto fijo en el código | Usar `$_ENV['PORT']` en lugar de un puerto fijo |
-| Credenciales expuestas | Usar variables de entorno, nunca escribirlas en el código |
-| No se sube `composer.json` | Asegurarse de hacer commit de todas las dependencias |
-| No se hace commit antes de conectar | Siempre hacer `git push` antes de configurar Render |
+| ❌ Puerto fijo en el código | Usar `getenv('PORT')` en lugar de un número fijo |
+| ❌ Credenciales expuestas en el código | Usar variables de entorno siempre |
+| ❌ No subir `composer.json` | Hacer commit de todas las dependencias |
+| ❌ No hacer commit antes de conectar | Siempre `git push` antes de configurar Render |
 
 ---
 
 ## 📚 Aprendizajes
 
-- Desarrollo de APIs REST con PHP sin frameworks.
-- Conexión a bases de datos en la nube con Supabase.
-- Estructura modular de un backend (routes → controllers → models).
-- Uso de variables de entorno para proteger credenciales.
-- Despliegue de aplicaciones PHP en la nube.
-- Separación entre frontend (GitHub Pages) y backend (servidor PHP).
+- Despliegue en la nube con Render.
+- Configuración de variables de entorno.
+- Separación de responsabilidades (routes → controllers → models).
+- Arquitectura básica de backend en PHP.
+- Conexión a base de datos en la nube con Supabase.
+- Separación entre frontend (GitHub Pages) y backend (Render).
