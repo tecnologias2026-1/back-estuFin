@@ -68,21 +68,26 @@ if (strpos($path, '/usuarios') === 0) {
 } elseif (strpos($path, '/metas_financieras') === 0 || strpos($path, '/metas') === 0) {
     require_once 'controllers/metas_financieras.controller.php';
     switch ($method) {
-        case 'GET':    handleGetMetasFinancieras();   break;
-        case 'POST':   handleCreateMetaFinanciera();  break;
-        case 'PUT':    handleUpdateMetaFinanciera();  break;
-        case 'DELETE': handleDeleteMetaFinanciera();  break;
+        case 'GET':    handleGetAllMetasFinancieras();   break;  // ← All
+        case 'POST':   handleCreateMetaFinanciera();     break;
+        case 'PUT':    handleUpdateMetaFinanciera();     break;
+        case 'DELETE': handleDeleteMetaFinanciera();     break;
         default: http_response_code(405); echo json_encode(['error' => 'Método no permitido']);
     }
 
 } elseif (strpos($path, '/proximos_pagos') === 0) {
     require_once 'controllers/proximos_pagos.controller.php';
-    switch ($method) {
-        case 'GET':    handleGetProximosPagos();   break;
-        case 'POST':   handleCreateProximoPago();  break;
-        case 'PUT':    handleUpdateProximoPago();  break;
-        case 'DELETE': handleDeleteProximoPago();  break;
-        default: http_response_code(405); echo json_encode(['error' => 'Método no permitido']);
+    $action = $_GET['action'] ?? '';
+    if ($method === 'POST' && $action === 'pagar') {
+        handleMarcarComoPagado();  // ← caso especial marcar pagado
+    } else {
+        switch ($method) {
+            case 'GET':    handleGetAllProximosPagos();   break;  // ← All
+            case 'POST':   handleCreateProximoPago();     break;
+            case 'PUT':    handleUpdateProximoPago();     break;
+            case 'DELETE': handleDeleteProximoPago();     break;
+            default: http_response_code(405); echo json_encode(['error' => 'Método no permitido']);
+        }
     }
 
 } elseif ($path === '/') {
