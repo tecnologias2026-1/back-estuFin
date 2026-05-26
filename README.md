@@ -10,7 +10,7 @@ Este repositorio contiene el backend del sistema **EstuFin** (aplicación de fin
 |---|---|
 | Jhon Sebastian Blandón Pérez | 1202796 |
 | Johan Santiago Cárdenas Mancera | 1202781 |
-| Deisy Carolina Solano López | *(pendiente)* |
+| Deisy Carolina Solano López | 1202805 |
 
 ---
 
