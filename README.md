@@ -1,6 +1,8 @@
 # 🔧 Backend – EstuFin
 
-Este repositorio contiene el backend del sistema **EstuFin** (aplicación de finanzas personales), desarrollado con **PHP** utilizando una estructura modular básica y desplegado en **Render**.
+EstuFin es una aplicación de **finanzas personales** que permite a los usuarios registrar movimientos, controlar gastos fijos y rápidos, gestionar métodos de pago, programar próximos pagos y definir metas financieras.
+
+Este repositorio contiene la implementación del backend desarrollado con **PHP** utilizando una estructura modular básica, conectado a una base de datos **Supabase (PostgreSQL)** y desplegado en **Render**.
 
 ---
 
@@ -18,10 +20,10 @@ Este repositorio contiene el backend del sistema **EstuFin** (aplicación de fin
 
 Implementar un servidor HTTP capaz de:
 
-- Gestionar solicitudes REST.
-- Procesar datos enviados desde el frontend.
-- Conectarse a base de datos.
-- Implementar operaciones CRUD.
+- Gestionar solicitudes REST desde el frontend.
+- Procesar datos enviados por el cliente.
+- Conectarse a la base de datos Supabase (PostgreSQL).
+- Implementar operaciones CRUD sobre todas las tablas del sistema.
 - Retornar respuestas en formato JSON.
 
 ---
@@ -32,21 +34,22 @@ El backend sigue una estructura modular:
 
 ```
 back-estuFin/
-├── api/              → Punto de entrada de los endpoints
-├── controllers/      → Lógica del sistema
-├── models/           → Acceso a base de datos
-├── routes/           → Definición de endpoints
-├── database/         → Conexión y scripts SQL
-├── Dockerfile        → Configuración para contenedor
-├── composer.json     → Dependencias PHP
-└── test.php          → Archivo de pruebas
+├── api/
+│   └── index.php         → Punto de entrada y enrutador principal
+├── controllers/          → Lógica de negocio de cada módulo
+├── models/               → Acceso y consultas a la base de datos
+├── routes/               → Definición de rutas de usuarios
+├── database/             → Conexión a Supabase y scripts SQL
+├── Dockerfile            → Configuración para despliegue en Render
+├── composer.json         → Dependencias PHP
+└── test.php              → Archivo de pruebas
 ```
 
 ---
 
 ## 🔵 Rama: `main` — Backend en PHP
 
-Backend desarrollado con **PHP** utilizando estructura modular básica.
+Backend desarrollado con **PHP puro** (sin frameworks), siguiendo una arquitectura modular (routes → controllers → models → database).
 
 ### ▶️ Ejecución Local
 
@@ -62,7 +65,7 @@ http://localhost:8000
 ### 🚀 Despliegue
 
 Compatible con:
-- ✅ Render (servicio PHP)
+- ✅ Render (servicio PHP con Docker)
 - ✅ InfinityFree
 - ✅ Hostinger
 - ✅ XAMPP (local)
@@ -71,67 +74,66 @@ Compatible con:
 
 ## 📡 Endpoints Implementados
 
-### 👤 Usuarios
+### 👤 Usuarios — `/api/usuarios`
 | Método | Ruta | Descripción |
 |---|---|---|
-| GET | `/api/users` | Obtener todos los usuarios |
-| POST | `/api/users` | Crear un usuario |
-| PUT | `/api/users/{id}` | Actualizar un usuario |
-| DELETE | `/api/users/{id}` | Eliminar un usuario |
+| POST | `/api/usuarios/registro` | Registrar un nuevo usuario |
+| POST | `/api/usuarios/login` | Iniciar sesión |
+| GET | `/api/usuarios` | Obtener todos los usuarios |
+| PUT | `/api/usuarios/{id}` | Actualizar un usuario |
+| DELETE | `/api/usuarios/{id}` | Eliminar un usuario |
 
-### 💸 Movimientos
+### 💸 Movimientos — `/api/movimientos`
 | Método | Ruta | Descripción |
 |---|---|---|
-| GET | `/api/movimientos` | Obtener todos los movimientos |
+| GET | `/api/movimientos?email=` | Obtener movimientos del usuario |
 | POST | `/api/movimientos` | Registrar un movimiento |
-| PUT | `/api/movimientos/{id}` | Actualizar un movimiento |
-| DELETE | `/api/movimientos/{id}` | Eliminar un movimiento |
 
-### 🔒 Gastos Fijos
+### 🔒 Gastos Fijos — `/api/gastos_fijos`
 | Método | Ruta | Descripción |
 |---|---|---|
-| GET | `/api/gastos-fijos` | Obtener gastos fijos |
-| POST | `/api/gastos-fijos` | Crear un gasto fijo |
-| PUT | `/api/gastos-fijos/{id}` | Actualizar un gasto fijo |
-| DELETE | `/api/gastos-fijos/{id}` | Eliminar un gasto fijo |
+| GET | `/api/gastos_fijos?email=` | Obtener gastos fijos |
+| POST | `/api/gastos_fijos` | Crear un gasto fijo |
+| DELETE | `/api/gastos_fijos?id=` | Eliminar un gasto fijo |
 
-### ⚡ Gastos Rápidos
+### ⚡ Gastos Rápidos — `/api/gastos_rapidos`
 | Método | Ruta | Descripción |
 |---|---|---|
-| GET | `/api/gastos-rapidos` | Obtener gastos rápidos |
-| POST | `/api/gastos-rapidos` | Registrar un gasto rápido |
-| PUT | `/api/gastos-rapidos/{id}` | Actualizar un gasto rápido |
-| DELETE | `/api/gastos-rapidos/{id}` | Eliminar un gasto rápido |
+| GET | `/api/gastos_rapidos?email=` | Obtener gastos rápidos |
+| POST | `/api/gastos_rapidos` | Registrar un gasto rápido |
+| PUT | `/api/gastos_rapidos` | Actualizar un gasto rápido |
+| DELETE | `/api/gastos_rapidos?id=` | Eliminar un gasto rápido |
 
-### 💳 Métodos de Pago
+### 💳 Métodos de Pago — `/api/metodos_pago`
 | Método | Ruta | Descripción |
 |---|---|---|
-| GET | `/api/metodos-pago` | Obtener métodos de pago |
-| POST | `/api/metodos-pago` | Agregar un método de pago |
-| PUT | `/api/metodos-pago/{id}` | Actualizar un método de pago |
-| DELETE | `/api/metodos-pago/{id}` | Eliminar un método de pago |
+| GET | `/api/metodos_pago?email=` | Obtener métodos de pago |
+| POST | `/api/metodos_pago` | Agregar un método de pago |
+| PUT | `/api/metodos_pago` | Actualizar saldo de un método |
+| DELETE | `/api/metodos_pago?id=` | Eliminar un método de pago |
 
-### 📅 Próximos Pagos
+### 📅 Próximos Pagos — `/api/proximos_pagos`
 | Método | Ruta | Descripción |
 |---|---|---|
-| GET | `/api/proximos-pagos` | Obtener próximos pagos |
-| POST | `/api/proximos-pagos` | Programar un pago |
-| PUT | `/api/proximos-pagos/{id}` | Actualizar un pago programado |
-| DELETE | `/api/proximos-pagos/{id}` | Eliminar un pago programado |
+| GET | `/api/proximos_pagos?email=` | Obtener próximos pagos |
+| POST | `/api/proximos_pagos` | Programar un pago |
+| POST | `/api/proximos_pagos?action=pagar` | Marcar pago como pagado |
+| PUT | `/api/proximos_pagos` | Actualizar un pago |
+| DELETE | `/api/proximos_pagos?id=` | Eliminar un pago |
 
-### 🎯 Metas Financieras
+### 🎯 Metas Financieras — `/api/metas_financieras`
 | Método | Ruta | Descripción |
 |---|---|---|
-| GET | `/api/metas` | Obtener metas financieras |
-| POST | `/api/metas` | Crear una meta |
-| PUT | `/api/metas/{id}` | Actualizar una meta |
-| DELETE | `/api/metas/{id}` | Eliminar una meta |
+| GET | `/api/metas_financieras?email=` | Obtener metas del usuario |
+| POST | `/api/metas_financieras` | Crear una meta |
+| PUT | `/api/metas_financieras` | Actualizar progreso de una meta |
+| DELETE | `/api/metas_financieras?id=` | Eliminar una meta |
 
 ---
 
-## 🗄️ Base de Datos
+## 🗄️ Base de Datos — Supabase (PostgreSQL)
 
-La base de datos está en **Supabase (PostgreSQL)**.  
+La base de datos está alojada en **Supabase**.
 Ubicación del script: `/database/script.sql`
 
 ### Tablas del sistema
@@ -213,10 +215,10 @@ Ubicación del script: `/database/script.sql`
 
 ## 🔐 Validaciones Implementadas
 
-- Validación de campos obligatorios.
-- Validación de formato email.
-- Manejo de errores HTTP (200, 201, 400, 404, 500).
-- Respuestas en formato JSON.
+- Validación de campos obligatorios en cada endpoint.
+- Contraseñas almacenadas con encriptación (`password_hash`).
+- Manejo de errores HTTP: `200`, `201`, `400`, `401`, `404`, `405`, `500`.
+- Respuestas estandarizadas en formato JSON.
 
 ---
 
@@ -272,14 +274,15 @@ Configurar en el panel de Render:
 | ❌ Credenciales expuestas en el código | Usar variables de entorno siempre |
 | ❌ No subir `composer.json` | Hacer commit de todas las dependencias |
 | ❌ No hacer commit antes de conectar | Siempre `git push` antes de configurar Render |
+| ❌ Driver PostgreSQL faltante | Agregar `pdo_pgsql` en el Dockerfile |
 
 ---
 
 ## 📚 Aprendizajes
 
-- Despliegue en la nube con Render.
-- Configuración de variables de entorno.
-- Separación de responsabilidades (routes → controllers → models).
-- Arquitectura básica de backend en PHP.
-- Conexión a base de datos en la nube con Supabase.
+- Desarrollo de APIs REST con PHP sin frameworks.
+- Conexión a base de datos en la nube con Supabase (PostgreSQL).
+- Estructura modular de un backend (routes → controllers → models).
+- Uso de variables de entorno para proteger credenciales.
+- Despliegue de aplicaciones PHP con Docker en Render.
 - Separación entre frontend (GitHub Pages) y backend (Render).
