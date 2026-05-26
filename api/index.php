@@ -19,12 +19,11 @@ $path = preg_replace('#^(/back-estuFin)?/api#', '', $path);
 if ($path === '' || $path === null) $path = '/';
 
 if (strpos($path, '/usuarios') === 0) {
-    // Auth: registro y login
-    if ($path === '/usuarios/registro' || $path === '/usuarios/login') {
+    if ($path === '/usuarios/registro' || $path === '/usuarios/login' ||
+        strpos($path, '/usuarios/registro') === 0 || strpos($path, '/usuarios/login') === 0) {
         require_once 'controllers/user.controller.php';
         handleAuthRoutes($method, $path);
     } else {
-        // CRUD usuarios
         require_once 'routes/user.routes.php';
         handleUserRoutes($method, $path);
     }
@@ -35,6 +34,16 @@ if (strpos($path, '/usuarios') === 0) {
         case 'GET':    handleGetGastosFijos();   break;
         case 'POST':   handleCreateGastoFijo();  break;
         case 'DELETE': handleDeleteGastoFijo();  break;
+        default: http_response_code(405); echo json_encode(['error' => 'Método no permitido']);
+    }
+
+} elseif (strpos($path, '/gastos_rapidos') === 0) {
+    require_once 'controllers/gastos_rapidos.controller.php';
+    switch ($method) {
+        case 'GET':    handleGetGastosRapidos();   break;
+        case 'POST':   handleCreateGastoRapido();  break;
+        case 'PUT':    handleUpdateGastoRapido();  break;
+        case 'DELETE': handleDeleteGastoRapido();  break;
         default: http_response_code(405); echo json_encode(['error' => 'Método no permitido']);
     }
 
@@ -53,6 +62,26 @@ if (strpos($path, '/usuarios') === 0) {
     switch ($method) {
         case 'GET':  handleGetAllMovimientos(); break;
         case 'POST': handleCreateMovimiento();  break;
+        default: http_response_code(405); echo json_encode(['error' => 'Método no permitido']);
+    }
+
+} elseif (strpos($path, '/metas_financieras') === 0 || strpos($path, '/metas') === 0) {
+    require_once 'controllers/metas_financieras.controller.php';
+    switch ($method) {
+        case 'GET':    handleGetMetasFinancieras();   break;
+        case 'POST':   handleCreateMetaFinanciera();  break;
+        case 'PUT':    handleUpdateMetaFinanciera();  break;
+        case 'DELETE': handleDeleteMetaFinanciera();  break;
+        default: http_response_code(405); echo json_encode(['error' => 'Método no permitido']);
+    }
+
+} elseif (strpos($path, '/proximos_pagos') === 0) {
+    require_once 'controllers/proximos_pagos.controller.php';
+    switch ($method) {
+        case 'GET':    handleGetProximosPagos();   break;
+        case 'POST':   handleCreateProximoPago();  break;
+        case 'PUT':    handleUpdateProximoPago();  break;
+        case 'DELETE': handleDeleteProximoPago();  break;
         default: http_response_code(405); echo json_encode(['error' => 'Método no permitido']);
     }
 
