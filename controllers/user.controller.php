@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../models/user.model.php';
 
-function handleUserRoutes($method, $path) {
+function handleAuthRoutes($method, $path) {  // ← solo cambia este nombre
     if ($path === '/usuarios/registro' && $method === 'POST') {
         $input = json_decode(file_get_contents("php://input"), true);
         if (!isset($input['nombre'], $input['email'], $input['password'])) {
